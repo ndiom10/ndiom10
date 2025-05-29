@@ -1,5 +1,5 @@
 # About Me:
-I am a 3nd Year Computer Science Major at the University of Virginia pursuing a Bachelor’s in Arts. I am currently working on small projects and cybersecurity training. I am looking to collaborate on side projects to build outside of school and work experience. I am looking for help in learning more about cybersecurity and working on larger projects and getting into web development. I am currently learning Discrete Math in my courses, learning the logical side of computer science. Ask me about sports, music, CS anything, looking to meet more new people every day. One fun fact about me is I was born in Tanzania, a country in East Africa.
+I am a 4th Year Computer Science Major at the University of Virginia pursuing a Bachelor’s in Arts. I am currently working on small projects and cybersecurity training. I am looking to collaborate on side projects to build outside of school and work experience. I am looking to learn more about cybersecurity and working on larger projects. I am currently working as an activity creator for Computer4Kids and while pursuing certifications for cybersecurity. Ask me about sports, music, anything in tech, looking to meet more new people every day. One fun fact about me is that I was born in Tanzania, a country on the coast of East Africa.
 
 
 ## Socials:
