@@ -21,47 +21,43 @@ typedef struct {
 static void *worker(void *arg) {
     WorkerArgs *a = (WorkerArgs *)arg;
 
-    int width = LB_width(a->state);
+    LifeBoard *state = a->state;
+    LifeBoard *next = a->next_state;
+    int width = LB_width(state);
 
     for (int step = 0; step < a->steps; step++) {
 
-        // Compute assigned rows
         for (int y = a->start_row; y < a->end_row; y++) {
             for (int x = 1; x < width - 1; x++) {
 
                 int neighbors =
-                    LB_get(a->state, x-1, y-1) +
-                    LB_get(a->state, x,   y-1) +
-                    LB_get(a->state, x+1, y-1) +
-                    LB_get(a->state, x-1, y)   +
-                    LB_get(a->state, x+1, y)   +
-                    LB_get(a->state, x-1, y+1) +
-                    LB_get(a->state, x,   y+1) +
-                    LB_get(a->state, x+1, y+1);
+                    LB_get(state, x-1, y-1) +
+                    LB_get(state, x,   y-1) +
+                    LB_get(state, x+1, y-1) +
+                    LB_get(state, x-1, y)   +
+                    LB_get(state, x+1, y)   +
+                    LB_get(state, x-1, y+1) +
+                    LB_get(state, x,   y+1) +
+                    LB_get(state, x+1, y+1);
 
-                int current = LB_get(a->state, x, y);
-                int next = 0;
+                int current = LB_get(state, x, y);
+                int next_val = 0;
 
                 if (neighbors == 3 || (neighbors == 2 && current)) {
-                    next = 1;
+                    next_val = 1;
                 }
 
-                LB_set(a->next_state, x, y, next);
+                LB_set(next, x, y, next_val);
             }
         }
-
-        // Wait for all threads to finish computing
         pthread_barrier_wait(a->barrier);
 
-        // One thread swaps boards
         if (a->thread_id == 0) {
-            LB_swap(a->state, a->next_state);
+            LB_swap(state, next);
         }
 
-        // Wait until swap is done
         pthread_barrier_wait(a->barrier);
     }
-
     return NULL;
 }
 
@@ -91,7 +87,7 @@ void simulate_life_parallel(int threads, LifeBoard *state, int steps) {
     pthread_barrier_t barrier;
     pthread_barrier_init(&barrier, NULL, threads);
 
-    // ---- ROW SPLITTING ----
+    //row split
     int interior_rows = height - 2;
     if (interior_rows < 0) interior_rows = 0;
 
@@ -117,17 +113,17 @@ void simulate_life_parallel(int threads, LifeBoard *state, int steps) {
         current = args[i].end_row;
     }
 
-    // ---- CREATE THREADS ----
+    //create threads
     for (int i = 0; i < threads; i++) {
         pthread_create(&tids[i], NULL, worker, &args[i]);
     }
 
-    // ---- JOIN THREADS ----
+    //join threads
     for (int i = 0; i < threads; i++) {
         pthread_join(tids[i], NULL);
     }
 
-    // ---- CLEANUP ----
+    //cleanup
     pthread_barrier_destroy(&barrier);
     LB_del(next_state);
     free(tids);
